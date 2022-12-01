@@ -4,52 +4,64 @@ import { links, social } from "./data"
 import logo from "./logo.svg"
 
 const Navbar = () => {
+  const [showLinks, setShowLinks] = useState(false)
+  const linksContainerRef = useRef(null) //for div
+  const linksRef = useRef(null) //for unordered list
+
+  useEffect(() => {
+    const linksHeights = linksRef.current.getBoundingClientRect().height
+    console.log(linksHeights)
+    if (showLinks) {
+      linksContainerRef.current.style.height = `${linksHeights}px`
+    } else {
+      linksContainerRef.current.style.height = "0px"
+    }
+  }, [showLinks])
+
   return (
     <nav>
       <div className="nav-center">
-        <div className="nav-cont">
+        <div className="nav-header">
           <img src={logo} alt="logo" />
-          <button className="nav-toggle">
+          <button
+            className="nav-toggle"
+            onClick={() => setShowLinks(!showLinks)}
+          >
             <FaBars />
           </button>
         </div>
-        <div className="links-container show-container">
-          <ul className="links">
+
+        <div
+          className="links-container"
+          ref={linksContainerRef}
+          // className={`${
+          //   showLinks ? "links-container show-container" : "links-container"
+          // }`}
+        >
+          <ul className="links" ref={linksRef}>
             {links.map((link) => {
               const { id, url, text } = link
+
               return (
-                <li id={id}>
+                <li key={id}>
                   <a href={url}> {text}</a>
                 </li>
               )
             })}
           </ul>
         </div>
-        {social.map((item) => {
-          const { id, url, icon } = item
-          return (
-            <li id={id}>
-              <a href={url}>{icon}</a>
-            </li>
-          )
-        })}
-        {/* <ul className="social-icon">
-          <li>
-            <a href="https://www.twitter.com">
-              <FaTwitter />
-            </a>
-          </li>
-          <li>
-            <a href="https://www.twitter.com">
-              <FaTwitter />
-            </a>
-          </li>
-          <li>
-            <a href="https://www.twitter.com">
-              <FaTwitter />
-            </a>
-          </li>
-        </ul> */}
+
+        <ul className="social-links">
+          {social.map((item) => {
+            const { id, url, icon } = item
+
+            return (
+              <li key={id}>
+                <a href={url}>{icon}</a>
+              </li>
+            )
+          })}
+        </ul>
       </div>
     </nav>
   )
